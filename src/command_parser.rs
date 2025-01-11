@@ -3,7 +3,7 @@ use std::path;
 use clap::Parser;
 use log::{error, info, warn};
 
-use crate::{io_uring::{UringMode, UringSqFillingMode, UringTaskWork}, util::{self, statistic::{MultiplexPort, OutputFormat, Parameter, SimulateConnection, UringParameter}, ExchangeFunction, IOModel, NPerfMode}};
+use crate::{io_uring::{UringMode, UringSqFillingMode, UringTaskWork}, util::{self, statistic::{MultiplexPort, OutputFormat, Parameter, SimulateConnection, UringParameter}, ExchangeFunction, IOModel, UDPerfMode}};
 use crate::net::{self, socket_options::SocketOptions};
 
 #[derive(Parser,Default,Debug)]
@@ -12,7 +12,7 @@ use crate::net::{self, socket_options::SocketOptions};
 pub struct udperf {
     /// Mode of operation: sender or receiver
     #[arg(default_value_t, value_enum)]
-    mode: NPerfMode,
+    mode: UDPerfMode,
 
     /// IP address to measure against/listen on
     #[arg(short = 'a',long, default_value_t = String::from("0.0.0.0"))]
@@ -258,11 +258,11 @@ impl udperf {
             return None;
         }
 
-        if parameter.mode == util::NPerfMode::Sender && self.multiplex_port_receiver == MultiplexPort::Sharding && (self.multiplex_port == MultiplexPort::Sharing || self.multiplex_port == MultiplexPort::Sharding ) {
+        if parameter.mode == util::UDPerfMode::Sender && self.multiplex_port_receiver == MultiplexPort::Sharding && (self.multiplex_port == MultiplexPort::Sharing || self.multiplex_port == MultiplexPort::Sharding ) {
             warn!("Sharding on receiver side doesn't work, if sender side is set to sharing or sharding (uses one port), since all traffic would be balanced to one thread (see man for SO_REUSEPORT)!");
         }
 
-        if parameter.mode == util::NPerfMode::Receiver && self.multiplex_port != MultiplexPort::Individual {
+        if parameter.mode == util::UDPerfMode::Receiver && self.multiplex_port != MultiplexPort::Individual {
             warn!("Can't set sender multiplexing on receiver side!");
         }
 
@@ -273,7 +273,7 @@ impl udperf {
             warn!("If receiver/sender is running on the same machine, with the same amount of threads, multiple threads are going to run on the same core! Available cores: {}", cores_amount);
         }
 
-        if parameter.mode == util::NPerfMode::Receiver && self.time != crate::DEFAULT_DURATION {
+        if parameter.mode == util::UDPerfMode::Receiver && self.time != crate::DEFAULT_DURATION {
             warn!("Time is ignored in receiver mode!");
         }
 
@@ -296,7 +296,7 @@ impl udperf {
             return None;
         }
 
-        if self.io_model == IOModel::IoUring && self.uring_mode == UringMode::Zerocopy && parameter.mode != util::NPerfMode::Sender {
+        if self.io_model == IOModel::IoUring && self.uring_mode == UringMode::Zerocopy && parameter.mode != util::UDPerfMode::Sender {
             warn!("Zero copy is only available with io_uring on the sender!");
             return None;
         }
@@ -306,7 +306,7 @@ impl udperf {
             return None;
         }
 
-        if self.interval > 0.0 && self.time == 0 && self.mode == NPerfMode::Receiver {
+        if self.interval > 0.0 && self.time == 0 && self.mode == UDPerfMode::Receiver {
             error!("Interval is set but time is 0! Time must be set when interval output is enabled!");
             return None;
         }
@@ -318,7 +318,7 @@ impl udperf {
 
         if self.bandwidth > 0 {
             // Check if bandwidth would overflow
-            if self.mode == NPerfMode::Receiver {
+            if self.mode == UDPerfMode::Receiver {
                 warn!("Bandwidth limitation is only available on the sender side! Parameter is ignored");
                 parameter.socket_options.socket_pacing_rate = 0;
             } else if self.bandwidth as u128 / 8 / 1000 / 1000 >= u64::MAX.into() {
@@ -362,8 +362,8 @@ impl udperf {
     }
 
 
-    fn parse_socket_options(&self, mode: NPerfMode) -> SocketOptions {
-        let gso = if self.with_gsro && mode == util::NPerfMode::Sender {
+    fn parse_socket_options(&self, mode: UDPerfMode) -> SocketOptions {
+        let gso = if self.with_gsro && mode == util::UDPerfMode::Sender {
             Some(self.datagram_size)
         } else {
             None
@@ -379,11 +379,11 @@ impl udperf {
             info!("Setting udp buffer sizes with recv {} and send {}", recv_buffer_size.unwrap(), send_buffer_size.unwrap());
         }
 
-        let gro = mode == util::NPerfMode::Receiver && self.with_gsro;
+        let gro = mode == util::UDPerfMode::Receiver && self.with_gsro;
 
         let reuseport = match mode {
-            NPerfMode::Sender => self.multiplex_port == MultiplexPort::Sharding,
-            NPerfMode::Receiver => self.multiplex_port_receiver == MultiplexPort::Sharding,
+            UDPerfMode::Sender => self.multiplex_port == MultiplexPort::Sharding,
+            UDPerfMode::Receiver => self.multiplex_port_receiver == MultiplexPort::Sharding,
         };
 
         // Convert Mbit/s total to byte/s per thread

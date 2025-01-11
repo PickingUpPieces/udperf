@@ -2,7 +2,7 @@ use std::{process::Command, thread::{self, JoinHandle}};
 use assert_cmd::prelude::*;
 
 #[allow(dead_code)]
-pub fn start_nperf_receiver(args: Option<Vec<String>>) -> JoinHandle<()> {
+pub fn start_udperf_receiver(args: Option<Vec<String>>) -> JoinHandle<()> {
     let handle = thread::spawn(|| {
         let mut cmd = Command::cargo_bin("udperf").unwrap();
         cmd.arg("receiver");
@@ -17,7 +17,7 @@ pub fn start_nperf_receiver(args: Option<Vec<String>>) -> JoinHandle<()> {
 }
 
 #[allow(dead_code)]
-pub fn start_nperf_sender(args: Option<Vec<String>>) -> JoinHandle<()> {
+pub fn start_udperf_sender(args: Option<Vec<String>>) -> JoinHandle<()> {
     thread::spawn(|| {
         std::thread::sleep(std::time::Duration::from_secs(3)); // Wait for receiver to start
         let mut cmd = Command::cargo_bin("udperf").unwrap();

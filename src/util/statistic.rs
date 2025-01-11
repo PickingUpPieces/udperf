@@ -439,7 +439,7 @@ pub struct Parameter {
     pub test_name: String,
     pub run_name: String,
     pub repetition_id: u16,
-    pub mode: super::NPerfMode,
+    pub mode: super::UDPerfMode,
     pub ip: std::net::Ipv4Addr,
     pub amount_threads: u16,
     #[serde(skip_serializing)]
@@ -471,7 +471,7 @@ impl Parameter {
         test_name: String,
         run_name: String,
         repetition_id: u16,
-        mode: super::NPerfMode, 
+        mode: super::UDPerfMode, 
         ip: std::net::Ipv4Addr, 
         amount_threads: u16, 
         output_interval: f64,

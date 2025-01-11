@@ -13,7 +13,7 @@ use statistic::Statistic;
 use crate::net::MessageHeader;
 
 #[derive(clap::ValueEnum, PartialEq, Default, Debug, Copy, Clone, Serialize)]
-pub enum NPerfMode {
+pub enum UDPerfMode {
     #[default]
     Receiver,
     Sender,

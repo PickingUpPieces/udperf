@@ -3,11 +3,11 @@ use std::thread;
 use hwlocality::{cpu::{binding::CpuBindingFlags, cpuset::CpuSet}, object::types::ObjectType, topology::support::{DiscoverySupport, FeatureSupport}, Topology};
 use log::{info, warn};
 
-use super::NPerfMode;
+use super::UDPerfMode;
 
 pub struct CoreAffinityManager {
     topology: hwlocality::Topology,
-    mode: NPerfMode,
+    mode: UDPerfMode,
     numa_affinity: bool,
     amount_cpus: usize,
     next_numa_node: u64,
@@ -15,7 +15,7 @@ pub struct CoreAffinityManager {
 }
 
 impl CoreAffinityManager {
-    pub fn new(mode: NPerfMode, first_core_id: Option<usize>, mut numa_affinity: bool) -> CoreAffinityManager {
+    pub fn new(mode: UDPerfMode, first_core_id: Option<usize>, mut numa_affinity: bool) -> CoreAffinityManager {
         let topology = Topology::new().unwrap();
 
         if !topology.supports(FeatureSupport::discovery, DiscoverySupport::pu_count) {
@@ -44,10 +44,10 @@ impl CoreAffinityManager {
         } 
 
         let next_core_id = match mode {
-            NPerfMode::Receiver => {
+            UDPerfMode::Receiver => {
                 first_core_id.unwrap_or(amount_cpus - 1)
             }, 
-            NPerfMode::Sender => {
+            UDPerfMode::Sender => {
                 first_core_id.unwrap_or(0)
             }
         };
@@ -92,7 +92,7 @@ impl CoreAffinityManager {
 
     fn get_core_id(&mut self) -> usize {
         let return_core_id = self.next_core_id;
-        let delta: isize = if self.mode == NPerfMode::Receiver { -1 } else { 1 }; 
+        let delta: isize = if self.mode == UDPerfMode::Receiver { -1 } else { 1 }; 
 
         if self.numa_affinity {
             if self.forward_numa_node() == 0 {

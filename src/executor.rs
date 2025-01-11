@@ -6,7 +6,7 @@ use crate::io_uring::IoUringOperatingModes;
 use crate::net::socket::Socket;
 use crate::node::{sender::Sender, receiver::Receiver, Node};
 use crate::util::core_affinity_manager::CoreAffinityManager;
-use crate::util::{statistic::{MultiplexPort, Parameter, SimulateConnection}, NPerfMode};
+use crate::util::{statistic::{MultiplexPort, Parameter, SimulateConnection}, UDPerfMode};
 use crate::Statistic;
 
 use std::os::fd::RawFd;
@@ -111,7 +111,7 @@ impl udperf {
                 socket.close().expect("Error closing socket");
             }
     
-            if !(self.run_infinite && parameter.mode == NPerfMode::Receiver) {
+            if !(self.run_infinite && parameter.mode == UDPerfMode::Receiver) {
                 return Some(final_statistics);
             }
         }
@@ -125,7 +125,7 @@ impl udperf {
             core_affinity_manager.lock().unwrap().set_affinity().unwrap();
         }
         
-        let mut node: Box<dyn Node> = if parameter.mode == NPerfMode::Sender {
+        let mut node: Box<dyn Node> = if parameter.mode == UDPerfMode::Sender {
             Box::new(Sender::new(test_id, sender_port, sock_address_receiver, socket, io_uring, parameter.clone()))
         } else {
             Box::new(Receiver::new(sock_address_receiver, socket, io_uring, parameter.clone()))
@@ -145,7 +145,7 @@ impl udperf {
 
 
     fn create_socket(&self, parameter: &Parameter) -> Option<Socket> {
-        if parameter.mode == NPerfMode::Sender && parameter.multiplex_port == MultiplexPort::Sharing {
+        if parameter.mode == UDPerfMode::Sender && parameter.multiplex_port == MultiplexPort::Sharing {
             info!("Creating master socket for all sender threads to use, since socket sharing is enabled");
             let mut socket = Socket::new(parameter.socket_options).expect("Error creating socket");
             let sock_address_in = SocketAddrV4::new(crate::DEFAULT_SENDER_IP, self.sender_port);
@@ -159,7 +159,7 @@ impl udperf {
             }
 
             Some(socket)
-        } else if parameter.mode == NPerfMode::Receiver && parameter.multiplex_port_receiver == MultiplexPort::Sharing {
+        } else if parameter.mode == UDPerfMode::Receiver && parameter.multiplex_port_receiver == MultiplexPort::Sharing {
             info!("Creating master socket for all receiver threads to use, since socket sharing is enabled");
             let sock_address_in = SocketAddrV4::new(parameter.ip, self.port);
             let mut socket = Socket::new(parameter.socket_options).expect("Error creating socket");
