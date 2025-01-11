@@ -1,12 +1,12 @@
-use nperf::nPerf;
+use udperf::udperf;
 
 fn main() {
-    let nperf = nPerf::new();
+    let udperf = udperf::new();
 
-    let parameter = match nperf.parse_parameter() {
+    let parameter = match udperf.parse_parameter() {
         Some(x) => x,
         None => { return },
     };
 
-    nperf.exec(parameter);
+    udperf.exec(parameter);
 }

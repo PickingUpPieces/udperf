@@ -5,9 +5,9 @@ fn uring_fillmode_topup() -> Result<(), Box<dyn std::error::Error>>{
     let handle = common::start_nperf_sender(Some(vec!["--port=45001".to_string(), "--with-gsro".to_string()]));
 
     let args = vec!["receiver", "--io-model=io-uring", "--port=45001", "--uring-sq-mode=topup"];
-    let nperf = nperf::nPerf::new().set_args(args);
-    let arguments = nperf.parse_parameter().unwrap();
-    if let Some(x) = nperf.exec(arguments) {
+    let udperf = udperf::udperf::new().set_args(args);
+    let arguments = udperf.parse_parameter().unwrap();
+    if let Some(x) = udperf.exec(arguments) {
         assert!(x.amount_datagrams > 10000);
     };
 
@@ -20,9 +20,9 @@ fn uring_fillmode_syscall() -> Result<(), Box<dyn std::error::Error>>{
     let handle = common::start_nperf_sender(Some(vec!["--port=45002".to_string(), "--with-gsro".to_string()]));
 
     let args = vec!["receiver", "--io-model=io-uring", "--port=45002", "--uring-sq-mode=syscall"];
-    let nperf = nperf::nPerf::new().set_args(args);
-    let arguments = nperf.parse_parameter().unwrap();
-    if let Some(x) = nperf.exec(arguments) {
+    let udperf = udperf::udperf::new().set_args(args);
+    let arguments = udperf.parse_parameter().unwrap();
+    if let Some(x) = udperf.exec(arguments) {
         assert!(x.amount_datagrams > 10000);
     };
 

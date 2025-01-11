@@ -1,6 +1,6 @@
 use log::{debug, error, info, warn};
 
-use crate::command_parser::nPerf;
+use crate::command_parser::udperf;
 use crate::io_uring::normal::IoUringNormal;
 use crate::io_uring::IoUringOperatingModes;
 use crate::net::socket::Socket;
@@ -14,9 +14,9 @@ use std::sync::{Arc, Mutex};
 use std::{net::SocketAddrV4, thread};
 extern crate core_affinity;
 
-impl nPerf {
+impl udperf {
     pub fn exec(self, parameter: Parameter) -> Option<Statistic> {
-        info!("Starting nPerf...");
+        info!("Starting udperf...");
         debug!("Running with Parameter: {:?}", parameter);
 
         let core_affinity_manager = Arc::new(Mutex::new(CoreAffinityManager::new(parameter.mode, None, parameter.numa_affinity)));

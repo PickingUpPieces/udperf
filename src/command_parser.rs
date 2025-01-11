@@ -9,7 +9,7 @@ use crate::net::{self, socket_options::SocketOptions};
 #[derive(Parser,Default,Debug)]
 #[clap(version, about="A network performance measurement tool")]
 #[allow(non_camel_case_types)]
-pub struct nPerf {
+pub struct udperf {
     /// Mode of operation: sender or receiver
     #[arg(default_value_t, value_enum)]
     mode: NPerfMode,
@@ -66,7 +66,7 @@ pub struct nPerf {
     #[arg(long, default_value_t = crate::DEFAULT_GSO_BUFFER_SIZE)]
     with_gso_buffer: u32,
 
-    /// Set the transmit buffer size. Multiple smaller datagrams can be send with one packet of MSS size. The MSS is the size of the packets sent out by nPerf. Gets overwritten by GSO/GRO buffer size if GSO/GRO is enabled.
+    /// Set the transmit buffer size. Multiple smaller datagrams can be send with one packet of MSS size. The MSS is the size of the packets sent out by udperf. Gets overwritten by GSO/GRO buffer size if GSO/GRO is enabled.
     #[arg(long, default_value_t = crate::DEFAULT_MSS)]
     with_mss: u32,
 
@@ -103,11 +103,11 @@ pub struct nPerf {
     output_file_path: path::PathBuf,
 
     /// Test label which appears in the output file, if multiple tests are run in parallel. Useful for benchmark automation.
-    #[arg(long, default_value_t = String::from("nperf-test"))]
+    #[arg(long, default_value_t = String::from("udperf-test"))]
     label_test: String,
 
     /// Run label which appears in the output file, to differentiate between multiple different runs which are executed within a single test. Useful for benchmark automation.
-    #[arg(long, default_value_t = String::from("run-nperf"))]
+    #[arg(long, default_value_t = String::from("run-udperf"))]
     label_run: String,
 
     /// Repetition label which appears in the output file, to differentiate between multiple different repetitions which are executed for a single run. Useful for benchmark automation.
@@ -163,22 +163,22 @@ pub struct nPerf {
     markdown_help: bool,
 }
 
-impl nPerf {
+impl udperf {
     pub fn new() -> Self {
         let _ = env_logger::try_init();
-        nPerf::parse()
+        udperf::parse()
     }
 
     pub fn set_args(self, args: Vec<&str>) -> Self {
         let mut args = args;
-        args.insert(0, "nPerf");
+        args.insert(0, "udperf");
         let args: Vec<String> = args.iter().map(|x| x.to_string()).collect();
-        nPerf::parse_from(args)
+        udperf::parse_from(args)
     }
 
     pub fn parse_parameter(&self) -> Option<util::statistic::Parameter> {
         if self.markdown_help {
-            clap_markdown::print_help_markdown::<nPerf>();
+            clap_markdown::print_help_markdown::<udperf>();
             return None;
         }
     

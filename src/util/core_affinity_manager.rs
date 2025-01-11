@@ -19,13 +19,13 @@ impl CoreAffinityManager {
         let topology = Topology::new().unwrap();
 
         if !topology.supports(FeatureSupport::discovery, DiscoverySupport::pu_count) {
-            panic!("If core-affinity enabled, nPerf needs accurate reporting of PU objects");
+            panic!("If core-affinity enabled, udperf needs accurate reporting of PU objects");
         }
         let Some(cpu_support) = topology.feature_support().cpu_binding() else {
-            panic!("If core-affinity enabled, nPerf requires CPU binding support");
+            panic!("If core-affinity enabled, udperf requires CPU binding support");
         };
         if !(cpu_support.get_thread() && cpu_support.set_thread()) {
-            panic!("If core-affinity enabled, nPerf needs support for querying and setting thread CPU bindings");
+            panic!("If core-affinity enabled, udperf needs support for querying and setting thread CPU bindings");
         }
 
         let mut amount_cpus = topology.objects_with_type(ObjectType::PU).count();

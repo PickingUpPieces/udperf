@@ -1,5 +1,5 @@
-# nPerf
-nPerf is a network performance measurement tool solely for measuring UDP throughput. 
+# udperf
+udperf is a network performance measurement tool solely for measuring UDP throughput. 
 Several different system calls as well as kernel features, such as GSO, GRO, or io_uring, can be compared along with several different features.
 It is targeted for Linux systems and is written in Rust.
 
@@ -8,7 +8,7 @@ The dependencies are required to build the project:
 - libhwloc-dev
 - libudev-dev
 
-These are required for the automatic core affinity feature of nPerf to work.
+These are required for the automatic core affinity feature of udperf to work.
 
 ## Building
 For building this project, you need to have cargo installed.
@@ -17,12 +17,12 @@ With cargo installed, you can build the project with the following command:
 cargo build --release
 ```
 
-## Usage of nPerf
-All options can be found in the help message of nPerf. 
-The help message can be shown with `nperf --help`.
+## Usage of udperf
+All options can be found in the help message of udperf. 
+The help message can be shown with `udperf --help`.
 
 
-**Usage:** `nperf [OPTIONS] [MODE]`
+**Usage:** `udperf [OPTIONS] [MODE]`
 
 ### Arguments
 
@@ -86,7 +86,7 @@ The help message can be shown with `nperf --help`.
 * `--with-gso-buffer <WITH_GSO_BUFFER>` — Set GSO buffer size which overwrites the MSS by default if GSO/GRO is enabled
 
   Default value: `64768`
-* `--with-mss <WITH_MSS>` — Set the transmit buffer size. Multiple smaller datagrams can be send with one packet of MSS size. The MSS is the size of the packets sent out by nPerf. Gets overwritten by GSO/GRO buffer size if GSO/GRO is enabled
+* `--with-mss <WITH_MSS>` — Set the transmit buffer size. Multiple smaller datagrams can be send with one packet of MSS size. The MSS is the size of the packets sent out by udperf. Gets overwritten by GSO/GRO buffer size if GSO/GRO is enabled
 
   Default value: `1472`
 * `--with-ip-frag` — Enable IP fragmentation on sending socket
@@ -127,13 +127,13 @@ The help message can be shown with `nperf --help`.
 
 * `--output-file-path <OUTPUT_FILE_PATH>` — Define the path in which the results file should be saved. Make sure the path exists and the application has the rights to write in it
 
-  Default value: `nperf-output.csv`
+  Default value: `udperf-output.csv`
 * `--label-test <LABEL_TEST>` — Test label which appears in the output file, if multiple tests are run in parallel. Useful for benchmark automation
 
-  Default value: `nperf-test`
+  Default value: `udperf-test`
 * `--label-run <LABEL_RUN>` — Run label which appears in the output file, to differentiate between multiple different runs which are executed within a single test. Useful for benchmark automation
 
-  Default value: `run-nperf`
+  Default value: `run-udperf`
 * `--repetition-id <REPETITION_ID>` — Repetition label which appears in the output file, to differentiate between multiple different repetitions which are executed for a single run. Useful for benchmark automation
 
   Default value: `1`
@@ -203,6 +203,6 @@ The help message can be shown with `nperf --help`.
 
 
 ## System Design
-The most important components of nPerf are shown in the following component diagram.
+The most important components of udperf are shown in the following component diagram.
 
-![nPerf Component Diagram](doc/figures/nperf-component.svg)
+![udperf Component Diagram](doc/figures/udperf-component.svg)

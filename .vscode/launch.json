@@ -11,11 +11,11 @@
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=nperf",
-                    "--package=nperf"
+                    "--bin=udperf",
+                    "--package=udperf"
                 ],
                 "filter": {
-                    "name": "nperf",
+                    "name": "udperf",
                     "kind": "bin"
                 }
             },
@@ -33,11 +33,11 @@
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=nperf",
-                    "--package=nperf"
+                    "--bin=udperf",
+                    "--package=udperf"
                 ],
                 "filter": {
-                    "name": "nperf",
+                    "name": "udperf",
                     "kind": "bin"
                 }
             },
@@ -54,7 +54,7 @@
             "env": {
                 "RUST_LOG": "DEBUG",
             },
-            "program": "${workspaceFolder}/target/debug/nperf",
+            "program": "${workspaceFolder}/target/debug/udperf",
             "args": ["sender", "--with-gsro"],
             "cwd": "${workspaceFolder}",
             "stopOnEntry": false,
@@ -67,7 +67,7 @@
             "env": {
                 "RUST_LOG": "DEBUG",
             },
-            "program": "${workspaceFolder}/target/debug/nperf",
+            "program": "${workspaceFolder}/target/debug/udperf",
             "args": ["receiver", "--with-gsro"],
             "cwd": "${workspaceFolder}",
             "stopOnEntry": false,

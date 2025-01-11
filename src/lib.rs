@@ -22,7 +22,7 @@ const DEFAULT_SENDER_PORT: u16 = 46001;
 const DEFAULT_INTERVAL: f64 = 0.0; // /* seconds */
 const DEFAULT_BANDWIDTH: u64 = 0; // /* Megabits per second (Mbit/s) */
 const WAIT_CONTROL_MESSAGE: u64 = 400; // /* milliseconds */
-const DEFAULT_FILE_NAME: &str = "nperf-output.csv";
+const DEFAULT_FILE_NAME: &str = "udperf-output.csv";
 const MAX_TEST_ID: usize = 1024;
 
 // Maximum datagram size UDP is (64K - 1) - IP and UDP header sizes 
@@ -40,4 +40,4 @@ const URING_ADDITIONAL_BUFFER_LENGTH: i32 = 40;
 const URING_ENTER_TIMEOUT: u32 = 10_000_000;
 const URING_SQPOLL_CPU: u32 = 0;
 
-pub use command_parser::nPerf;
+pub use command_parser::udperf;
